@@ -19,16 +19,16 @@ fun TextTyperUI(
     onStop: () -> Unit,
     inputText: String,
     onTextChange: (String) -> Unit,
-    startDelay: Long,
-    onChangeStartDelay: (Long) -> Unit,
+    startDelay: String,
+    onChangeStartDelay: (String) -> Unit,
     stillRunning: Boolean
 ) {
-    var countdown by remember { mutableStateOf(0L) }
+    var countdown by remember { mutableLongStateOf(0L) }
 
     // Handle countdown timer
     LaunchedEffect(isTyping, startDelay) {
         if (isTyping) {
-            countdown = startDelay
+            countdown = startDelay.toLongOrNull() ?: 3000L
             while (countdown > 0) {
                 delay(100)
                 countdown -= 100
@@ -54,15 +54,15 @@ fun TextTyperUI(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    "Text Typer",
+                    text = "Text Typer",
                     style = MaterialTheme.typography.headlineSmall
                 )
 
                 OutlinedTextField(
                     label = { Text("Start Delay (ms)") },
-                    value = startDelay.toString(),
+                    value = startDelay,
                     onValueChange = {
-                        onChangeStartDelay(it.toLongOrNull() ?: 300L)
+                        onChangeStartDelay(it)
                     },
                     modifier = Modifier.width(180.dp),
                     enabled = !isTyping
@@ -86,9 +86,8 @@ fun TextTyperUI(
             }
 
             if (isTyping && countdown > 0L) {
-                val percent = ((startDelay - countdown).toFloat() / startDelay * 100).toInt()
                 Text(
-                    text = "Starting in ${countdown / 1000.0f}s ($percent%)",
+                    text = "Starting in ${countdown / 1000.0f}s",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -104,7 +103,7 @@ fun TextTyperUI(
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(fs)
-                        .heightIn(min = 120.dp), // ~5 lines visually
+                        .heightIn(min = 120.dp),
                     maxLines = 5,
                     isError = stillRunning && !isTyping,
                 )

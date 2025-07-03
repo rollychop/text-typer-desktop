@@ -14,7 +14,7 @@ fun main(): Unit = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "Text Typer",
-        icon = painterResource("text_field.png"),
+        icon = painterResource("text_field.jpg"),
         onKeyEvent = onKeyEvent@{
             if (it.key == Key.Escape && isTyping) {
                 isTyping = false

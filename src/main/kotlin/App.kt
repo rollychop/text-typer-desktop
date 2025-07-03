@@ -12,13 +12,13 @@ fun App(
     onStop: () -> Unit
 ) {
     var inputText by remember { mutableStateOf("") }
-    var timeMillis by remember { mutableLongStateOf(3000) }
+    var timeMillis by remember { mutableStateOf("3000") }
 
     val typer = remember<KeyTyper> { RobotKeyTyper() }
-    val shouldType = rememberUpdatedState(isTyping)
+    rememberUpdatedState(isTyping)
     val stopCallback = rememberUpdatedState(onStop)
     val scope = rememberCoroutineScope()
-    var stillRunning by remember { mutableStateOf(false) }
+    val stillRunning by remember { mutableStateOf(false) }
 
     // Track job state to cancel if needed
     var job by remember { mutableStateOf<Job?>(null) }
@@ -27,11 +27,9 @@ fun App(
         if (isTyping) {
             val activeFlag = AtomicBoolean(true)
             job = scope.launch(Dispatchers.Default) {
-                delay(timeMillis)
+                delay(timeMillis.toLongOrNull() ?: 3000L)
                 for (char in inputText) {
-                    stillRunning = true
                     if (!activeFlag.get()) {
-                        stillRunning = false
                         break
                     }
                     typer.typeChar(char)
@@ -49,11 +47,14 @@ fun App(
     }
 
     TextTyperUI(
-        stillRunning=stillRunning,
+        stillRunning = stillRunning,
         startDelay = timeMillis,
         onChangeStartDelay = { timeMillis = it },
         isTyping = isTyping,
-        onStart = { if (inputText.isNotBlank()) onStart() },
+        onStart = {
+            if (inputText.isNotBlank() && timeMillis.toLongOrNull() != null)
+                onStart()
+        },
         onStop = onStop,
         inputText = inputText,
         onTextChange = { inputText = it }
