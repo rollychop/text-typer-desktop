@@ -1,0 +1,5 @@
+object TypeSoundPlayer {
+    fun playClick() {
+
+    }
+}
