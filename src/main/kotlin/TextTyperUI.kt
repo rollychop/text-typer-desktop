@@ -9,8 +9,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import ui.notoFont
+import util.WhitespaceAndUnicodeVisualTransformation
 
 @Composable
 fun TextTyperUI(
@@ -114,10 +117,40 @@ fun TextTyperUI(
             }
         }
 
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            TextButton(
+                enabled = !isTyping,
+                onClick = {
+                    onTextChange(
+                        inputText.lines()
+                            .joinToString("\n") { line -> line.trimStart() }
+                    )
+                }
+            ) {
+                Text("Trim start")
+            }
+
+
+            TextButton(
+                enabled = !isTyping,
+                onClick = {
+                    onTextChange(
+                        inputText.lines()
+                            .joinToString("\n") { line -> line.trimEnd() }
+                    )
+                }
+            ) {
+                Text("Trim end")
+            }
+        }
         BasicTextField(
             enabled = !isTyping,
             value = inputText,
             onValueChange = onTextChange,
+            visualTransformation = WhitespaceAndUnicodeVisualTransformation(),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp)
@@ -139,7 +172,9 @@ fun TextTyperUI(
                     }
                     innerTextField()
                 }
-            }
+            },
+            textStyle = TextStyle.Default
+                .copy(fontFamily = notoFont)
         )
     }
 }
