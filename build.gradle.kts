@@ -32,7 +32,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "text-typer"
-            packageVersion = "1.0.0"
+            packageVersion = "1.0.1"
         }
     }
 }
