@@ -60,6 +60,7 @@ class WhitespaceAndUnicodeVisualTransformation(
                         append(char)
                         pop()
                     }
+
                     else -> append(char)
                 }
             }

@@ -1,8 +1,13 @@
+package ui
+
 import androidx.compose.runtime.*
+import androidx.compose.ui.text.input.TextFieldValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import util.KeyTyper
+import util.RobotKeyTyper
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Composable
@@ -11,7 +16,7 @@ fun App(
     onStart: () -> Unit,
     onStop: () -> Unit
 ) {
-    var inputText by remember { mutableStateOf("") }
+    var inputText by remember { mutableStateOf(TextFieldValue()) }
     var timeMillis by remember { mutableStateOf("3000") }
 
     val typer = remember<KeyTyper> { RobotKeyTyper() }
@@ -28,7 +33,7 @@ fun App(
             val activeFlag = AtomicBoolean(true)
             job = scope.launch(Dispatchers.Default) {
                 delay(timeMillis.toLongOrNull() ?: 3000L)
-                for (char in inputText) {
+                for (char in inputText.text) {
                     if (!activeFlag.get()) {
                         break
                     }
@@ -52,7 +57,7 @@ fun App(
         onChangeStartDelay = { timeMillis = it },
         isTyping = isTyping,
         onStart = {
-            if (inputText.isNotBlank() && timeMillis.toLongOrNull() != null)
+            if (inputText.text.isNotBlank() && timeMillis.toLongOrNull() != null)
                 onStart()
         },
         onStop = onStop,
